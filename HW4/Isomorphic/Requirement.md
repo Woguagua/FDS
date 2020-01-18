@@ -52,5 +52,6 @@ int main()
 >1
 # Sample Output 2 (for the trees shown in Figure 2):
 >0
+
 ![Figure2](./figures/figure2.png)
 
