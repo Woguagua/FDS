@@ -1,64 +1,48 @@
 //The function required
-ElementType EvalPostfix( char *expr ){
-    int isnegative = 0;
-	int isdominal = 0;
-	double integer = 0;
-    double dominal = 0;
-    double number = 0;
-    double calculate[30];
-    double op1;
-    double op2;
-    double watch = 0;
-    int i = 0;
-    double watch2 = 0;
-    while(1){
-        watch2 = *expr;
-		if((*expr > '0' && *expr < '9') || (*expr == '-' && *(expr+1) > '0' && *(expr) < '9')){
-            if(*expr == '-'){
-                isnegative = 1;
-                expr++;
-            }
-            integer = *expr - '0';
-            expr++;
-            while(*expr != ' '){
-                watch = *expr;
-                if(*expr == '.'){
-                    isdominal = 1;
-                    expr++;
-                }
-                if(*expr < '0' || *expr > '9')  break;
-                if(isdominal == 0){
-                    integer = integer*10 + *expr - '0';
-                }
-                else if(isdominal > 0){
-                    dominal += (*expr - '0')*pow(10,-1*isdominal);
-                    isdominal++;
-                }
-                expr++;
-            }
-            number = integer + dominal;
-            if(isnegative)  number *= -1;
-            calculate[i++] = number;
-            isdominal = 0;
-            isnegative = 0;
-            integer = 0;
-            number = 0;
-            dominal = 0;
-        }
-        else if(*expr == '+' || *expr == '-' || *expr == '*' || *expr == '/'){
-            op2 = calculate[--i];
-            op1 = calculate[--i];
-            switch(*expr){
-                case '+':calculate[i++] = op1 + op2;break;
-                case '-':calculate[i++] = op1 - op2;break;
-                case '*':calculate[i++] = op1 * op2;break;
-                case '/':if(op2 == 0)   return Infinity;calculate[i++] = op1 /op2;break;
-            }
-            expr++;
-        }
-        else if(*expr == ' ')	expr++;
-        else	break;
+int Isomorphic( Tree T1, Tree T2 ){
+    if(T1 == NULL || T2 == NULL){
+        if(T1 == NULL  &&  T2 == NULL)  return 1;
+        else    return 0;
     }
-    if(i != 1)  return Infinity;
-    return calculate[0];
+    if(T1->Element != T2->Element)  return 0;
+    if(T1->Left == NULL){
+        if(T1->Right == NULL){
+            if(T2->Left == NULL  &&  T2->Right == NULL)     return 1;
+            else    return 0;
+        }
+        else if(T2->Left == NULL){
+            if(T2->Right == NULL)   return 0;
+            else{
+                if( Isomorphic(T1->Right,T2->Right) )   return 1;
+                else    return 0;
+            }
+        }
+        else if(T2->Right == NULL){
+            if( Isomorphic(T1->Right,T2->Left) )   return 1;
+            else    return 0;
+        }
+        else    return 0;
+    }
+    else if(T1->Right == NULL){
+        if(T2->Left == NULL){
+            if(T2->Right == NULL)   return 0;
+            else{
+                if( Isomorphic(T1->Left,T2->Right) )   return 1;
+                else    return 0;
+            }
+        }
+        else if(T2->Right == NULL){
+            if( Isomorphic(T1->Left,T2->Left) )   return 1;
+            else    return 0;
+        }
+        else    return 0;
+    }
+    if(T2->Left == NULL || T2->Right == NULL)   return 0;
+    if(T1->Left->Element == T2->Left->Element){
+        if( !Isomorphic(T1->Left,T2->Left)  ||  !Isomorphic(T1->Right,T2->Right) )  return 0;
+    }
+    else if(T1->Left->Element == T2->Right->Element){
+        if( !Isomorphic(T1->Left,T2->Right)  ||  !Isomorphic(T1->Right,T2->Left) )  return 0;
+    }
+    return 1;
 }
