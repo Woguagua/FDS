@@ -1,0 +1,1 @@
+This repository is used to store the codes I wrote in my course Fundermantal Data Structure
